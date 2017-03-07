@@ -4,8 +4,6 @@
 // Schema:
 // hours["Monday"][0]["course"], startTime, endTime, CA, location
 
-// 'use strict';
-
 var APP_ID = "amzn1.ask.skill.a66f6bc0-2f42-4558-8058-eed00857ea41";
 
 var hours = {
@@ -113,46 +111,13 @@ exports.handler = (event, context, callback) => {
             switch (event.request.intent.name) {
                 case "GetTodayHours":
                     var dow = new Date();
-                    var x = hours["Monday"];
-                    var result = "";
-                    switch(dow.getDay()) {
-                        case 0: // Sunday
-                        case 6: // Saturday
-                            result = "You fucking tryhard no one goes to office hours on \
-                            the weekends."
-                            break;
-                        case 1: // Monday
-                            x = hours["Monday"];
-                            break;
-                        case 2:
-                            x = hours["Tuesday"];
-                            break;
-                        case 3:
-                            x = hours["Wednesday"];
-                            break;
-                        case 4:
-                            x = hours["Thursday"];
-                            break;
-                        case 5:
-                            x = hours["Friday"];
-                            break;
-                        default:
-                            break;
-                            
-                    }
-                    result = "There are office hours for ";
-                    for (var i = 0; i < x.length; i++) {
-                        result += x[i]["course"];
-                        result += " with " + x[i]["CA"];
-                        result += " at " + x[i]["location"];
-                        result += " from " + x[i]["startTime"] + " to " + x[i]["endTime"] + ", ";
-                    }
-                    result = result.substring(0, result.length - 2); // trim last ,
+                    var result = getHoursByDay(dow.getDay());
                     context.succeed(generateResponse(buildSpeechletResponse(result,true), {}));
                     break;
                 case "GetTmrwHours":
-                    // write gettoday as a function of DOW, so we can write less code for this
-                    console.succeed();
+                    var dow = new Date();
+                    var result = getHoursByDay((dow.getDay()+1)%6);
+                    context.succeed(generateResponse(buildSpeechletResponse(result,true), {}));
                     break;
                 case "GetDOWHours":
                     console.succeed();
@@ -192,5 +157,43 @@ generateResponse = (speechletResponse, sessionAttributes) => {
     response: speechletResponse
   }
 
+}
+
+getHoursByDay = (day) => {
+	var x = hours["Monday"];
+    var result = "";
+    switch(day) {
+        case 0: // Sunday
+        case 6: // Saturday
+            result = "You fucking tryhard no one goes to office hours on \
+            the weekends."
+            break;
+        case 1: // Monday
+            x = hours["Monday"];
+            break;
+        case 2:
+            x = hours["Tuesday"];
+            break;
+        case 3:
+            x = hours["Wednesday"];
+            break;
+        case 4:
+            x = hours["Thursday"];
+            break;
+        case 5:
+            x = hours["Friday"];
+            break;
+        default:
+            break;
+            
+    }
+    result = "There are office hours for ";
+    for (var i = 0; i < x.length; i++) {
+        result += x[i]["course"];
+        result += " with " + x[i]["CA"];
+        result += " at " + x[i]["location"];
+        result += " from " + x[i]["startTime"] + " to " + x[i]["endTime"] + ", ";
+    }
+    return result ? result.substring(0, result.length - 2) : "No data found"; // trim last ,
 }
 
