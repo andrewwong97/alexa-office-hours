@@ -33,6 +33,13 @@ var hours = {
         },
         {
             "course": "Linear Algebra",
+            "startTime": "5:00 PM",
+            "endTime": "6:00 PM",
+            "CA": "Clingman",
+            "location": "Krieger 211"
+        },
+        {
+            "course": "Linear Algebra",
             "startTime": "6:00 PM",
             "endTime": "7:00 PM",
             "CA": "Ethan Lee",
@@ -46,6 +53,27 @@ var hours = {
             "endTime": "11:00 AM",
             "CA": "Christy Lee",
             "location": "u-grad"
+        },
+        {
+            "course": "Linear Algebra",
+            "startTime": "11:00 AM",
+            "endTime": "12:30 PM",
+            "CA": "Harrop",
+            "location": "Krieger 207"
+        },
+        {
+            "course": "Linear Algebra",
+            "startTime": "12:30 PM",
+            "endTime": "2:30 PM",
+            "CA": "Bernstein",
+            "location": "Krieger 408"
+        },
+        {
+            "course": "Linear Algebra",
+            "startTime": "3:00 PM",
+            "endTime": "5:00 PM",
+            "CA": "Zhang and Koh",
+            "location": "Krieger 211"
         },
         {
             "course": "CSF",
@@ -62,6 +90,20 @@ var hours = {
             "endTime": "2:30 PM",
             "CA": "Dan Smillie",
             "location": "u-grad"
+        },
+        {
+            "course": "Linear Algebra",
+            "startTime": "1:30 PM",
+            "endTime": "2:30 PM",
+            "CA": "Tzolova",
+            "location": "Krieger 207"
+        },
+        {
+            "course": "Linear Algebra",
+            "startTime": "3:00 PM",
+            "endTime": "4:00 PM",
+            "CA": "Ren",
+            "location": "Krieger 201"
         },
         {
             "course": "CSF",
@@ -138,7 +180,6 @@ exports.handler = (event, context, callback) => {
 };
 
 buildSpeechletResponse = (outputText, shouldEndSession) => {
-
   return {
     outputSpeech: {
       type: "PlainText",
@@ -187,13 +228,17 @@ getHoursByDay = (day) => {
             break;
             
     }
-    result = "There are office hours for ";
-    for (var i = 0; i < x.length; i++) {
-        result += x[i]["course"];
-        result += " with " + x[i]["CA"];
-        result += " at " + x[i]["location"];
-        result += " from " + x[i]["startTime"] + " to " + x[i]["endTime"] + ", ";
+    if (day != 6) {
+        result = "There are office hours for ";
+        for (var i = 0; i < x.length; i++) {
+            result += x[i]["course"];
+            result += " with " + x[i]["CA"];
+            result += " at " + x[i]["location"];
+            result += " from " + x[i]["startTime"] + " to " + x[i]["endTime"] + ", ";
+        }
+        return result ? result.substring(0, result.length - 2) : "No data found";
+    } else {
+        return result;
     }
-    return result ? result.substring(0, result.length - 2) : "No data found"; // trim last ,
 }
 
