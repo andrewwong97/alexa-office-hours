@@ -147,7 +147,7 @@ exports.handler = (event, context, callback) => {
     switch (event.request.type) {
         case "LaunchRequest":
             console.log("LaunchRequest");
-            context.succeed(generateResponse(buildSpeechletResponse("You have launched office hours",true), {}));
+            context.succeed(generateResponse(buildSpeechletResponse("Welcome to my lair.",true), {}));
             break;
         case "IntentRequest":
             switch (event.request.intent.name) {
@@ -162,7 +162,9 @@ exports.handler = (event, context, callback) => {
                     context.succeed(generateResponse(buildSpeechletResponse(result,true), {}));
                     break;
                 case "GetDOWHours":
-                    console.succeed();
+                    var dow = new Date(event.request.intent.slots["DayOfWeek"]["value"]);
+                    var result = getHoursByDay(dow.getDay());
+                    context.succeed(generateResponse(buildSpeechletResponse(result,true), {}));
                     break;
                 default:
                     throw "Invalid intent";
@@ -206,7 +208,7 @@ getHoursByDay = (day) => {
     switch(day) {
         case 0: // Sunday
         case 6: // Saturday
-            result = "You fucking tryhard no one goes to office hours on \
+            result = "You fuh-king try-hard no one goes to office hours on \
             the weekends."
             break;
         case 1: // Monday
